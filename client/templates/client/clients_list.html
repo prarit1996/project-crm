@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Clients Created by {{ request.user }} {% endblock %}
+
+{% block content %}
+    <div class="py-6 px-6">
+        <h1 class="mb-4 text-xl">Clients</h1>
+        <a href="{% url 'clients:add' %}" class="mb-4 inline-block py-4 px-6 bg-teal-600 rounded-xl text-white">Add Client</a>
+        <a href="{% url 'clients:clientexport' %}" class="mb-4 inline-block py-4 px-6 bg-teal-600 rounded-xl text-white">Export</a>
+        {% if clients %}
+            <div class="flex justify-between">
+                <p class="py-4 px-2 bg-gray-200 font-semibold w-full">Name</p>
+            </div>
+            {% for client in clients %}
+                <div class="flex justify-between">
+                    <p class="py-4 px-2 font-semibold w-full {% cycle 'bg-gray-100' '' %}">
+                        <a href ="{% url 'clients:details' client.id %}">{{ client.name }}</a>
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+             <p>There are no clients in the database...</p>
+        {% endif %}
+
+
+    </div>
+
+{% endblock %}

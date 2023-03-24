@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+
+{% block title %} {{ client.name }} {% endblock %}
+
+{% block content %}
+    <div class="py-6 px-6">
+        <h1 class="mb-4 text-xl">{{ client.name }}</h1>
+
+        <p class ="font-semibold">Description</p>
+        <p class="mb-3">{{ client.description }}</p>
+
+        <p class ="font-semibold">Created At</p>
+        <p class="mb-3">{{ client.created_at|date:"M-d-Y H:i" }}</p>
+
+        <p class ="font-semibold">Modified At</p>
+        <p class="mb-3">{{ client.modified_at }}</p>
+
+        <hr class="my-4">
+            <div>
+                <p class="inline-block px-4 py-3 bg-red-500 rounded-xl">
+                    <a href = "{% url 'clients:delete' client.id %}">Delete</a>
+                </p>
+                <p class="inline-block px-4 py-3 bg-teal-500 rounded-xl">
+                    <a href = "{% url 'clients:edit' client.id %}">Update</a>
+                </p>
+            </div>
+
+        <hr class="my-4">
+
+            <h2 class="mb-6 text-xl">Comments</h2>
+            <div class="space-y-4">
+                {% for comment in client.comments.all %}
+                    <div class="mb-4 bg-gray-100 px-6 py-6 rounded-xl">
+                        <p class="mb-2"><strong>{{ comment.created_by }} @ {{ comment.created_at }}</strong></p>
+                        {{ comment.content }}
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="post" action="{% url 'clients:addcomment' client.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="px-4 py-3 bg-blue-500 rounded-x">Submit</button>
+            </form>
+        <hr class="my-4">
+            <h2 class="mb-6 text-xl">Files</h2>
+            <div class="space-y-4">
+                {% for file in client.files.all %}
+                    <div class="mb-4 bg-gray-100 px-6 py-6 rounded-xl">
+                        <p class="mb-2"><strong>{{ file.created_by }} @ {{ file.created_at }}</strong></p>
+                        {{ file.file }}
+                        <a href = {{ file.file.url }}>Download</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="post" action="{% url 'clients:addfile' client.id %}", enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ fileform.as_p }}
+                <button class="px-4 py-3 bg-blue-500 rounded-x">Submit</button>
+            </form>
+        <hr class="my-4">
+    </div>
+
+    <div class="text-center">
+        <a href = "{% url 'clients:list' %}">Back to Client list</a>
+    </div>
+
+{% endblock %}

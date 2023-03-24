@@ -1,0 +1,79 @@
+{% extends 'core/base.html' %}
+
+{% block title %} {{ object.name }} {% endblock %}
+
+{% block content %}
+    <div class="py-6 px-6">
+        <h1 class="mb-4 text-xl">{{ object.name }}</h1>
+
+        <p class ="font-semibold">Description</p>
+        <p class="mb-3">{{ object.description }}</p>
+
+        <p class ="font-semibold">Priority</p>
+        <p class="mb-3">{{ object.get_priority_display }}</p>
+
+        <p class ="font-semibold">Status</p>
+        <p class="mb-3">{{ object.get_status_display }}</p>
+
+        <p class ="font-semibold">Created At</p>
+        <p class="mb-3">{{ object.created_at|date:"M-d-Y H:i" }}</p>
+
+        <p class ="font-semibold">Modified At</p>
+        <p class="mb-3">{{ object.modified_at }}</p>
+
+        <hr class="my-4">
+            <div>
+                <p class="inline-block px-4 py-3 bg-red-500 rounded-xl">
+                    <a href = "{% url 'leads:delete' object.id %}">Delete</a>
+                </p>
+                <p class="inline-block px-4 py-3 bg-teal-500 rounded-xl">
+                    <a href = "{% url 'leads:edit' object.id %}">Update</a>
+                </p>
+                <p class="inline-block px-4 py-3 bg-blue-500 rounded-xl">
+                    <a href = "{% url 'leads:convert' object.id %}">Convert To Client</a>
+                </p>
+
+            </div>
+            <hr class="my-4">
+            <h2 class="mb-6 text-xl">Comments</h2>
+            <div class="space-y-4">
+                {% for comment in lead.comments.all %}
+                    <div class="mb-4 bg-gray-100 px-6 py-6 rounded-xl">
+                        <p class="mb-2"><strong>{{ comment.created_by }} @ {{ comment.created_at }}</strong></p>
+                        {{ comment.content }}
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="post" action="{% url 'leads:addcomment' lead.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="px-4 py-3 bg-blue-500 rounded-x">Submit</button>
+            </form>
+
+        <hr class="my-4">
+            <h2 class="mt-4 mb-6 text-xl">Files</h2>
+            <div class="space-y-4">
+                {% for file in lead.files.all %}
+                    <div class="mb-4 bg-gray-100 px-6 py-6 rounded-xl">
+                        <p class=" mb-2"><strong>{{ file.created_by }} @ {{ file.created_at }}</strong></p>
+                        {{ file.file }}
+                        <a href = {{ file.file.url }}>Download</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="post" action="{% url 'leads:addfile' lead.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ fileform.as_p }}
+                <button class="mt-4 px-4 py-3 bg-blue-500 rounded-x">Submit</button>
+            </form>
+
+        <hr class="my-4">
+
+
+    </div>
+
+    <div class="text-center">
+        <a href = "{% url 'leads:list' %}">Back to Lead list</a>
+    </div>
+
+{% endblock %}

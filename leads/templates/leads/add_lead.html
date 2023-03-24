@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Add Lead{% endblock %}
+
+{% block content %}
+    <div class = 'py-6 px-4'>
+
+        {% if team.plan.max_leads > team.lead.count %}
+            <form method="post" action=".">{% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="py-4 px-8 bg-teal-500 text-white rounded-xl">Submit</button>
+            </form>
+        {% else %}
+            <div class="mb-4 px-4 py-6 bg-red-300 rounded-xl text-white">
+                Your team has reached maximum number of leads allowed for you subscription
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
